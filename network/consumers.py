@@ -17,8 +17,14 @@ class PeerConsumer(AsyncJsonWebsocketConsumer):
             self.channel_name
         )
 
-        self.logger.info('joined')
-        self.logger.info(dir(self))
+        self.logger.info('joined channel')
+
+        self.logger.debug('scope type: {}'.format(self.scope['type']))
+        self.logger.debug('scope path: {}'.format(self.scope['path']))
+        self.logger.debug('scope headers: {}'.format(self.scope['headers']))
+        self.logger.debug('scope client: {}'.format(self.scope['client']))
+        self.logger.debug('scope server: {}'.format(self.scope['server']))
+        self.logger.debug(self.channel_name)
 
         await self.accept()
 
@@ -28,11 +34,21 @@ class PeerConsumer(AsyncJsonWebsocketConsumer):
             self.channel_name
         )
 
-        self.logger.info('disconnected')
+        self.logger.info('left channel and disconnected')
 
     async def receive_json(self, content):
-        self.logger.debug(content['uri'])
-        self.logger.debug(content)
+        await self.channel_layer.group_send(
+            self.channel_group_name,
+            {
+                'type': 'message',
+                'message': content['uri'],
+                'channel': self.channel_name,
+            }
+        )
+
+    async def message(self, event):
+        if event['channel'] != self.channel_name:
+            await self.send(text_data=event['message'])
 
 
 class EchoConsumer(AsyncConsumer):
