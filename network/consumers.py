@@ -31,7 +31,8 @@ class PeerConsumer(AsyncJsonWebsocketConsumer):
         self.logger.info('disconnected')
 
     async def receive_json(self, content):
-        self.logger.debug(content['peer'])
+        self.logger.debug(content['uri'])
+        self.logger.debug(content)
 
 
 class EchoConsumer(AsyncConsumer):

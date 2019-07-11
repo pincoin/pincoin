@@ -140,5 +140,15 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        'network': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'chain': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
     },
 }
